@@ -1,20 +1,47 @@
 import torch
-from transformers import PreTrainedTokenizerFast
-from transformers import BartForConditionalGeneration
+from transformers import PreTrainedTokenizerFast                  # 한국어 제목
+from transformers import BartForConditionalGeneration             # 한국어 제목
+from transformers import T5ForConditionalGeneration, T5Tokenizer  # 영어 제목
 
 
-def generateTitle(text):
+def generate_title(text, lang):
+    if text == "error1" or "error2":  # 요약 실패
+        headline = None
 
-    model = BartForConditionalGeneration.from_pretrained('yebini/kobart-headline-gen')
-    tokenizer = PreTrainedTokenizerFast.from_pretrained('yebini/kobart-headline-gen')
+    if lang == 'en':                  # 감지된 언어 영어 -> 영어 제목 생성
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    # text =  '서울 중부경찰서는 마약을 투약한 상태로 운전을 하다 교통사고를 내고 도주한 혐의로 40대 남성에 대해 구속영장을 신청했습니다. 이 남성은 지난 5일 오전 6시 15분쯤 서울 중구 광희동의 한 도로에서 마약을 투약한 상태로 고급 외제차를 몰다 신호 대기 중인 차량 2대를 들이받은 뒤 도주한 혐의를 받고 있습니다. 이 남성은 사고 직후 2백 미터가량 달아났다 다시 현장으로 돌아와 경찰에 자수했으며, 마약 간이 시약 검사에선 대마 양성 반응이 나온 걸로 파악됐습니다. 남성이 들이받은 차량에 타고 있던 운전자들은 크게 다치지는 않은 걸로 전해졌으며, 경찰은 남성의 소변과 모발을 국립과학수사연구원에 보내 정밀 감정을 의뢰하고 자세한 경위를 조사하고 있습니다.'
+        model = T5ForConditionalGeneration.from_pretrained("Michau/t5-base-en-generate-headline")
+        tokenizer = T5Tokenizer.from_pretrained("Michau/t5-base-en-generate-headline")
+        model = model.to(device)
 
-    inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True)
-    summary_ids = model.generate(inputs.input_ids, max_length=64, num_beams=5, repetition_penalty=1.2, length_penalty=0.8, early_stopping=True)
+        article = "headline: " + text
 
-    title = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
+        encoding = tokenizer.encode_plus(article, return_tensors="pt")
+        input_ids = encoding["input_ids"].to(device)
+        attention_masks = encoding["attention_mask"].to(device)
 
-    print("제목:", title)
-    return title
+        headline_ids = model.generate(
+            input_ids=input_ids,
+            attention_mask=attention_masks,
+            max_length=64,
+            num_beams=3,
+            early_stopping=True,
+        )
+        headline = tokenizer.decode(headline_ids[0], skip_special_tokens=True)
+    elif lang == 'ko':                # 감지된 언어 한국어 -> 한국어 제목 생성
+        headline_model = BartForConditionalGeneration.from_pretrained('yebini/kobart-headline-gen')
+        headline_tokenizer = PreTrainedTokenizerFast.from_pretrained('yebini/kobart-headline-gen')
 
+        inputs = headline_tokenizer(text, return_tensors="pt", padding=True, truncation=True)
+        headline_ids = headline_model.generate(
+            inputs.input_ids,
+            max_length=64,
+            num_beams=5,
+            repetition_penalty=1.2,
+            length_penalty=0.8,
+            early_stopping=True)
+
+        headline = headline_tokenizer.decode(headline_ids[0], skip_special_tokens=True)
+
+    return headline

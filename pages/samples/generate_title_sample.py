@@ -1,5 +1,5 @@
 import streamlit as st
-from utils.generateTitleTest import generateTitle
+from utils.generateTitleTest import generate_title
 
 
 def run():
@@ -12,6 +12,6 @@ def run():
             st.warning("텍스트를 입력해주세요.")
         else:
             with st.spinner("요약 중입니다..."):
-                title = generateTitle(text)
+                title = generate_title(text)
                 st.success("✅ 제목 생성 완료 !")
                 st.write(title)
