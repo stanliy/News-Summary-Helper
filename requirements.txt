@@ -1,0 +1,20 @@
+# 필수 라이브러리
+torch==2.2.2
+transformers==4.41.2
+tokenizers==0.19.1
+sentencepiece==0.2.0
+langdetect==1.0.9
+newspaper3k==0.2.8
+tqdm==4.67.1
+regex==2024.11.6
+requests==2.32.3
+
+# 크롤링용
+beautifulsoup4==4.13.2
+lxml==5.4.0
+
+# Streamlit 웹앱 용도 (필요 시)
+streamlit==1.45.0
+
+# 선택 사항 (모델 저장 등)
+safetensors==0.5.3
