@@ -1,4 +1,4 @@
-# 📰 News Summary Helper (CLI 기반)
+# 📰 CLI파일
 
 콘솔에서 뉴스 기사 URL을 입력하면,
 본문을 자동으로 추출하고 언어를 감지해  
@@ -19,11 +19,25 @@
 
 ---
 
-## 🧪 실행 방법
+
+## 🚀 실행 방법 (CLI 기반 뉴스 요약기)
+
+이 프로젝트는 CLI(Command Line Interface) 환경에서 한국어 및 영어 뉴스 기사를 자동으로 요약하고 제목을 생성하는 도구입니다.
+
+### 1. 의존성 설치
+
+먼저 필요한 패키지를 설치하세요:
 
 ```bash
-# 가상환경 실행 (Windows 기준)
-venv\Scripts\activate
-
-# 의존성 설치
 pip install -r requirements.txt
+
+### 2. CLI 실행
+
+다음 명령어를 **프로젝트 루트 디렉토리 (`News-Summary-Helper/`)에서** 실행하세요:
+
+```bash
+python -m CLI.runcli
+
+
+##예시용 url
+https://www.khan.co.kr/article/202505121732001

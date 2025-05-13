@@ -1,2 +1,20 @@
+# Python 캐시 파일 무시
 *.pyc
 __pycache__/
+
+# 가상환경 디렉토리 무시
+myenv/
+
+# 모델 및 데이터 관련 파일 무시
+*.pkl
+*.pt
+
+# 환경변수 파일 무시시
+.env
+
+# VSCode 관련 (개인 설정이므로 무시)
+.vscode/
+
+# 시스템 파일 관련 무시시
+.DS_Store
+Thumbs.db
