@@ -2,29 +2,46 @@ import streamlit as st
 from utils.summaryNewsTest import summary_news        # 요약문 생성
 from utils.summaryNewsTest import decide_summary_len  # 요약문 길이 설정
 from utils.generateTitleTest import generate_title    # 제목 생성
-from langdetect import detect, LangDetectException    # 언어 감지
+from utils.extractor import extract_article_text      # 본문 추출
+from utils.language import detect_language            # 언어 감지
 
 
 def run():
     st.title("📝 본문 요약문 및 제목 생성 Demo")
 
-    # TODO: 현재 본문 수동 입력 -> 추후 본문 추출 함수 사용으로 교체 예정
-    text = st.text_area("뉴스 본문을 입력하세요", height=300)
+    st.sidebar.header('세부사항 선택')
+    input_mode = st.sidebar.selectbox("입력 방식 선택", ("URL 입력", "직접 입력"))
 
-    # TODO: 임시 언어 감지 -> 추후 분리된 언어 감지 함수 사용으로 교체 예정
-    try:
-        lang = detect(text)      # 입력된 언어 감지
-    except LangDetectException:  # 언어 감지 실패 (너무 짧은 입력 or 지원언어 아님)
-        lang = None
+    text = ""
 
-    st.write("공백 포함 본문 길이(ctrl+enter로 반영)", len(text))
+    if input_mode == "URL 입력":
+        url = st.text_input("URL을 입력하세요",
+                            help="url 입력 후 enter를 누르면 본문 길이와 감지된 언어가 표시됩니다",
+                            placeholder="예: https://www.example.com/article/...")
+        if url.strip():
+            try:
+                with st.spinner("본문 추출 중입니다..."):
+                    text = extract_article_text(url)
+            except ValueError as e:
+                st.error(str(e))
+
+    elif input_mode == "직접 입력":
+        text = st.text_area("뉴스 본문을 입력하세요",
+                            help="본문 입력 후 ctrl+enter를 누르면 본문 길이와 감지된 언어가 표시됩니다",
+                            placeholder="여기에 본문을 직접 입력하세요", height=300)
+
+    if text.strip():
+        lang = detect_language(text)
+        st.write(f"공백 포함 본문 길이: `{len(text)}` | 감지된 언어: `{lang}`")
+    else:
+        lang = "unknown"
+
     if 0 < len(text) < 100:
         st.warning("입력 길이가 너무 짧습니다 (권장 길이: 100~1000자)")
 
-    length_option = st.radio(
-        "요약문 길이를 선택하세요",
+    length_option = st.sidebar.selectbox(
+        "요약문 길이 선택",
         ("짧게 (약 100~300자)", "중간 (약 200~400자)", "길게 (약 400~600자)"),
-        horizontal=True
     )
 
     if length_option == "짧게 (약 100~300자)":
@@ -52,6 +69,6 @@ def run():
                     st.error("지원하는 언어가 아닙니다 (지원 언어: 영어, 한국어)")
                 else:
                     st.success("✅ 생성 완료 !")
-                    st.write(title)
+                    st.write(f"**{title}**")
                     st.write(summary)
-                    st.write("공백 포함 요약문 길이", len(summary))
+                    st.write(f"공백 포함 요약문 길이: `{len(summary)}`")
