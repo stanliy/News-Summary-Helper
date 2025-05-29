@@ -4,6 +4,8 @@ from utils.summaryNewsTest import decide_summary_len  # 요약문 길이 설정
 from utils.generateTitleTest import generate_title    # 제목 생성
 from utils.extractor import extract_article_text      # 본문 추출
 from utils.language import detect_language            # 언어 감지
+from utils.classify_topic import detect_topic         # 분야 분류
+from utils.article_memory import save_article,show_similar_articles  # 동일 분야 기사 출력
 
 
 def run():
@@ -63,6 +65,11 @@ def run():
             with st.spinner("생성 중입니다..."):
                 summary = summary_news(text, lang, summary_min, summary_max)
                 title = generate_title(summary, lang)
+                topic = detect_topic(text if len(text) <= 512 else summary)
+                try:
+                    save_article(title, summary, topic, lang)
+                except Exception as e:
+                    st.info(f"기사 자동 저장에 실패하였습니다 ({e})")
                 if summary == "error1":
                     st.error("언어 감지에 실패하였습니다 (지원 언어: 영어, 한국어)")
                 elif summary == "error2":
@@ -71,4 +78,5 @@ def run():
                     st.success("✅ 생성 완료 !")
                     st.write(f"**{title}**")
                     st.write(summary)
-                    st.write(f"공백 포함 요약문 길이: `{len(summary)}`")
+                    st.write(f"공백 포함 요약문 길이: `{len(summary)}` | 분야: `{topic}`")
+                    show_similar_articles(topic, summary)

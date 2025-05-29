@@ -8,6 +8,7 @@ from pages.samples.kobart_summary_sample import run as kobart_summary
 from pages.samples.generate_title_sample import run as generate_title
 from pages.demos.generate_and_detect_demo import run as generate_and_detect
 from pages.demos.generate_summary_and_title_demo import run as generate_summary_and_title
+from pages.demos.show_saved_articles import run as show_saved_articles
 
 def intro():
     st.title("Welcome to Streamlit! 👋")
@@ -30,7 +31,8 @@ samples = {
 }
 demos = {
     "본문 추출 및 언어 감지 Sample" : generate_and_detect,
-    "본문 내용 요약문 및 제목 생성 Sample" : generate_summary_and_title
+    "본문 내용 요약문 및 제목 생성 Sample" : generate_summary_and_title,
+    "저장된 기사 요약문 보기 Sample" : show_saved_articles
 }
 
 
