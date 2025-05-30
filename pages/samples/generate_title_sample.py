@@ -3,7 +3,7 @@ from utils.generateTitleTest import generate_title
 
 
 def run():
-    st.title("📝 Generate Title Demo")
+    st.title("📝 Generate Title Sample")
 
     text = st.text_area("뉴스 요약문을 입력하세요:", height=300)
 
