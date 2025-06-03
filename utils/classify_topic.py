@@ -27,3 +27,32 @@ def get_topic():
              'health', 'labour', 'religion', 'weather', 'environment', 'conflict, war and peace']
 
     return topic
+
+    # 상세 주제를 한국어 카테고리로 매핑합니다.
+
+    # Args:
+    #     topic (str): 분류된 주제 문자열
+        
+    # Returns:
+    #     str: 해당하는 한국어 카테고리 또는 None
+
+def topic_to_category(topic):
+    social_topics = {'human interest', 'society', 'crime, law and justice', 'disaster, accident and emergency incident', 'labour', 'religion'}
+    culture_topics = {'arts, culture, entertainment and media', 'lifestyle and leisure'}
+    science_topics = {'education', 'science and technology', 'health', 'weather', 'environment'}
+
+    if topic == 'economy, business and finance':
+        return "경제"
+    if topic == 'politics':
+        return "정치"
+    if topic in social_topics:
+        return "사회"
+    if topic == 'conflict, war and peace':
+        return "국제"
+    if topic in culture_topics:
+        return "문화"
+    if topic == 'sport':
+        return "스포츠"
+    if topic in science_topics:
+        return "과학"
+    return none;

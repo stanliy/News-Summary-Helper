@@ -6,6 +6,7 @@ from utils.extractor import extract_article_text      # 본문 추출
 from utils.language import detect_language            # 언어 감지
 from utils.classify_topic import detect_topic         # 분야 분류
 from utils.article_memory import save_article         # 기사 자동 저장
+from components.related_news_component import suggest_related_news
 
 
 # 요약 옵션 선택 및 요약 결과를 보여주는 컴포넌트입니다
@@ -73,7 +74,11 @@ def show_input_news(text, lang, length_option):
 def show_summary_title(text, lang):
     summary_min, summary_max = decide_summary_len(lang, st.session_state['summary_len']).values()
     with st.spinner("생성 중입니다..."):
-        summary = summary_news(text, lang, summary_min, summary_max)
+        try:
+            summary = summary_news(text, lang, summary_min, summary_max)
+        except IndexError:
+            st.error("입력 길이를 다시 확인해주세요. (권장 길이 100 ~ 2000자)")
+            return
         title = generate_title(summary, lang)
         topic = detect_topic(text if len(text) <= 512 else summary)
         try:
@@ -89,7 +94,13 @@ def show_summary_title(text, lang):
             st.write(f"**{title}**")
             st.write(summary)
             st.write(f"공백 포함 요약문 길이: `{len(summary)}` | 분야: `{topic}`")
-            show_similar_articles(topic, summary)
+
+            # 기존에 요약을 진행한 기사 
+            # show_similar_articles(topic, summary) 
+
+            # 같은 category에서 유사도가 높은 순서 관련 기사 (components/related_news_component.py)
+            suggest_related_news() 
+
 
 
 def show_similar_articles(current_topic, current_summary):

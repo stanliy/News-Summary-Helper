@@ -1,7 +1,7 @@
 import streamlit as st
 import time, datetime
 from dateutil.relativedelta import relativedelta
-from utils.connection import connectDB
+from utils.connection import selectDB
 
 # 10년 전 오늘 데이터를 출력하는 컴포넌트입니다 ( data 호출은 따로 )
 # Manual
@@ -11,12 +11,12 @@ from utils.connection import connectDB
 def get_10years_ago_news():
 
     correct_time = datetime.datetime.now() - relativedelta(years=10)
-    target_date = "2015-05-27"                          # 데이터가 없어서 날짜 부분 하드코딩
-    # target_date = correct_time.strftime('%Y-%m-%d')
+    # target_date = "2015-05-17"                          # 데이터가 없어서 날짜 부분 하드코딩
+    target_date = correct_time.strftime('%Y-%m-%d')
 
     # st.write(correct_time.strftime('%Y-%m-%d')) 
 
-    df = connectDB(f"select * from news_summary WHERE article_date ='{target_date}'" ) 
+    df = selectDB(f"select * from news_summary WHERE article_date ='{target_date}'" ) 
     return df
 
 def con(df):
@@ -32,6 +32,6 @@ def sidebarCon(df):
             st.info("✅ 10년 전 오늘")
             with st.container(border=True):
                 for i in df:
-                    st.markdown(str(i['id']) + " : [" + i['title_summary'][:18] + "..." + "](" + i['url'] + ")")
+                    st.markdown(str(i['category']) + " : [" + i['title_summary'][:18] + "..." + "](" + i['url'] + ")")
                     # st.metric(str(i['id']), i['title_summary'][:20], i['category'])
                 # st.caption("This is a string that explains something above.")
