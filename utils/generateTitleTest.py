@@ -5,7 +5,7 @@ from transformers import T5ForConditionalGeneration, T5Tokenizer  # 영어 제�
 
 
 def generate_title(text, lang):
-    if text == "error1" or "error2":  # 요약 실패
+    if text == "error1" or text == "error2":  # 요약 실패
         headline = None
 
     if lang == 'en':                  # 감지된 언어 영어 -> 영어 제목 생성
@@ -31,7 +31,8 @@ def generate_title(text, lang):
         headline = tokenizer.decode(headline_ids[0], skip_special_tokens=True)
     elif lang == 'ko':                # 감지된 언어 한국어 -> 한국어 제목 생성
         headline_model = BartForConditionalGeneration.from_pretrained('yebini/kobart-headline-gen')
-        headline_tokenizer = PreTrainedTokenizerFast.from_pretrained('yebini/kobart-headline-gen')
+        # NOTE : tokenizer 문제가 생겨서 잠시 다른 모델의 tokenizer로 대체
+        headline_tokenizer = PreTrainedTokenizerFast.from_pretrained('digit82/kobart-summarization')
 
         inputs = headline_tokenizer(text, return_tensors="pt", padding=True, truncation=True)
         headline_ids = headline_model.generate(

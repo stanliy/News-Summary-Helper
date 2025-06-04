@@ -3,7 +3,7 @@ from utils.summaryNewsTest import summary_news
 
 
 def run():
-    st.title("📝 KoBART News Summary Demo")
+    st.title("📝 KoBART News Summary Sample")
 
     text = st.text_area("한국어 뉴스 원문을 입력하세요:", height=300)
 
