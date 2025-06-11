@@ -30,11 +30,7 @@ def selectDB(sql):
         database=os.getenv("DB_NAME"),
         username=os.getenv("ODB_USER"),
         password=os.getenv("ODB_PASSWORD"),
-        query={
-        # "driver": "MySQL ODBC 8.0 ANSI Driver",  # 또는 "MySQL ODBC 8.0 Unicode Driver"
-        "charset": "utf8mb4",
-        # "ssl-mode": "REQUIRED",  # (필요한 경우)
-        },
+        connect_args={"charset": "utf8mb4"},
     )
 
     df = conn.query(sql, ttl=0)
@@ -55,11 +51,7 @@ def updateDB(sql_list, param_list):
         database=os.getenv("DB_NAME"),
         username=os.getenv("ODB_USER"),
         password=os.getenv("ODB_PASSWORD"),
-        query={
-        # "driver": "MySQL ODBC 8.0 ANSI Driver",  # 또는 "MySQL ODBC 8.0 Unicode Driver"
-        "charset": "utf8mb4",
-        # "ssl-mode": "REQUIRED",  # (필요한 경우)
-        },
+        connect_args={"charset": "utf8mb4"},
     )
 
     try:
